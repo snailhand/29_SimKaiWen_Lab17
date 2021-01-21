@@ -44,23 +44,48 @@ public class CharacterController : MonoBehaviour
         float hVelocity = 0;
         float vVelocity = 0;
 
-        if(Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
+        //Walking Controls & Animations
+        if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
         {
             hVelocity = -moveSpeed;
             transform.localScale = new Vector3(-1, 1, 1);
+            animator.SetFloat("xVelocity", 5.0f);
+            animator.SetBool("moving", true);
         }
-
-        if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
+        else if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
         {
             hVelocity = moveSpeed;
             transform.localScale = new Vector3(1, 1, 1);
+            animator.SetFloat("xVelocity", Mathf.Abs(hVelocity));
+            animator.SetBool("moving", true);
+        }
+        else
+        {
+            animator.SetFloat("xVelocity", 0);
+            animator.SetBool("moving", false);
         }
 
+        if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D) && jumpCount == 0)
+        {
+            audioSource.clip = sounds[2];
+            audioSource.Play();
+        }
+        else if (!Input.GetKey(KeyCode.LeftArrow) || !Input.GetKey(KeyCode.A) || !Input.GetKey(KeyCode.RightArrow) || !Input.GetKey(KeyCode.D) && audioSource.isPlaying )
+        {
+            //audioSource.Pause();
+        }
+
+
+
+        print(jumpCount);
+
+
+        //Jumping Controls
         if (Input.GetKeyDown(KeyCode.Space) && jumpCount == 0)
         {
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             audioSource.PlayOneShot(sounds[0]);
-
+            
             animator.SetTrigger("JumpTrigger");
             animator.SetBool("onGround", false);
             jumpCount++;
@@ -68,13 +93,6 @@ public class CharacterController : MonoBehaviour
 
         hVelocity = Mathf.Clamp(rb.velocity.x + hVelocity, -5, 5);
         rb.velocity = new Vector2(hVelocity, rb.velocity.y + vVelocity);
-
-
-        //Use the following code to set the animator parameter on User Input:
-        /*
-        animator.SetFloat("xVelocity", Mathf.Abs(hVelocity));
-        animator.SetFloat("xVelocity", 0);
-        */
 
     }
 
