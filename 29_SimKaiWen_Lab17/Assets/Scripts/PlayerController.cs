@@ -74,7 +74,7 @@ public class PlayerController : MonoBehaviour
         }
         else if (!Input.GetKey(KeyCode.LeftArrow) && !Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.RightArrow) && !Input.GetKey(KeyCode.D) && audioSource.isPlaying)
         {
-            //audioSource.Pause();
+            audioSource.Pause();
         }
 
         if (jumpCount == 1)
